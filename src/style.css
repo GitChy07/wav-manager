@@ -1,0 +1,163 @@
+:root {
+    --bg-main: #1b1c20;
+    --bg-panel: #242930;
+    --bg-input: #15181c;
+    --border-color: #323842;
+    --accent-orange: #ff8523;
+    --accent-green: #00ff66;
+    --text-light: #e3e6eb;
+    --text-muted: #8a93a1;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    user-select: none;
+}
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-light);
+    font-size: 14px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* TOP BAR (FL Studio Menu Mock) */
+.daw-header {
+    background-color: var(--bg-panel);
+    border-bottom: 2px solid var(--border-color);
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.daw-title {
+    color: var(--accent-orange);
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.user-status a {
+    color: var(--text-muted);
+    text-decoration: none;
+    margin-left: 15px;
+}
+.user-status a:hover { color: var(--accent-orange); }
+
+/* MAIN WINDOW LAYOUT */
+.daw-container {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* LOGIN WINDOW */
+.login-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.fl-window {
+    background-color: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    border-radius: 4px;
+    width: 380px;
+}
+
+.fl-window-header {
+    background: linear-gradient(to bottom, #2d333c, #242930);
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: bold;
+}
+
+.fl-window-body {
+    padding: 20px;
+}
+
+/* FORMS & INPUTS */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+.fl-input {
+    width: 100%;
+    background-color: var(--bg-input);
+    border: 1px solid var(--border-color);
+    color: var(--text-light);
+    padding: 8px;
+    border-radius: 3px;
+    outline: none;
+}
+.fl-input:focus { border-color: var(--accent-orange); }
+
+.fl-btn {
+    width: 100%;
+    background: linear-gradient(to bottom, #3a414d, #2d333c);
+    border: 1px solid var(--border-color);
+    color: var(--text-light);
+    padding: 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-weight: bold;
+}
+.fl-btn:hover { background: var(--accent-orange); color: #000; }
+
+/* EXPLORER & EDITOR PANELS */
+.fl-panel {
+    background-color: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-explorer { flex: 2; }
+.panel-editor { flex: 1; }
+
+/* TRACK LIST / BROWSER ROW */
+.sound-list {
+    list-style: none;
+    overflow-y: auto;
+    padding: 5px;
+}
+
+.sound-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background-color: var(--bg-input);
+    margin-bottom: 4px;
+    border-radius: 2px;
+    border-left: 3px solid var(--text-muted);
+    cursor: pointer;
+}
+.sound-item:hover { border-left-color: var(--accent-orange); background-color: #1e2228; }
+.sound-item.active { border-left-color: var(--accent-green); }
+
+.tag-badge {
+    background-color: #2d333c;
+    color: var(--accent-orange);
+    padding: 2px 6px;
+    font-size: 11px;
+    border-radius: 10px;
+}

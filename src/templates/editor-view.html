@@ -1,0 +1,40 @@
+<div class="fl-panel panel-editor">
+    <div class="fl-window-header">🎚️ SAMPLER PROPERTIES (ATTRIBUT-EDITOR)</div>
+    <div class="fl-window-body">
+        
+        <form action="index.php" method="POST">
+            <div class="form-group">
+                <label>FILE TITLE</label>
+                <input type="text" name="title" class="fl-input" value="Hood_Anthem_2026.wav">
+            </div>
+            
+            <div class="form-group">
+                <label>TYPE</label>
+                <select name="type" class="fl-input">
+                    <option value="Track">Track</option>
+                    <option value="Stem">Stem</option>
+                    <option value="One-Shot">One-Shot</option>
+                </select>
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+                <div class="form-group" style="flex: 1;">
+                    <label>BPM</label>
+                    <input type="number" name="bpm" class="fl-input" value="140">
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>KEY (TONART)</label>
+                    <input type="text" name="key" class="fl-input" value="C-Min">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>TAGS (KOMMA-TRENNUNG)</label>
+                <input type="text" name="tags" class="fl-input" value="Hoodtrap, Dark, 2026">
+            </div>
+
+            <button type="submit" class="fl-btn" style="margin-top: 10px; background: linear-gradient(to bottom, #2e6b43, #1b472a); border-color: var(--accent-green);">SAVE METADATA</button>
+        </form>
+
+    </div>
+</div>
