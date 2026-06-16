@@ -1,0 +1,38 @@
+<!doctype html>
+<div class="fl-panel panel-relations">
+    <div class="fl-window-header">🔗 LINK MATRIX (TRACK RELATION MANAGER)</div>
+    <div class="fl-window-body">
+        
+        <form action="index.php" method="POST" style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color);">
+            <div class="form-group">
+                <label>CHOOSE MAIN TRACK (PARENT)</label>
+                <select name="parent_track_id" class="fl-input">
+                    <option value="1">Hood_Anthem_2026.wav</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>ASSIGN STEM / ONE-SHOT (CHILD)</label>
+                <select name="child_sound_id" class="fl-input">
+                    <option value="2">Main_Pluck_Stem.wav</option>
+                    <option value="3">Sub_808_OneShot.wav</option>
+                </select>
+            </div>
+
+            <button type="submit" class="fl-btn" style="background: linear-gradient(to bottom, #4f3b78, #3f2b66); border-color: #6f5b98;">LINK SAMPLES</button>
+        </form>
+
+        <label style="color: var(--text-muted); font-size: 12px; display: block; margin-bottom: 5px;">ACTIVE ASSIGNMENTS</label>
+        <ul class="sound-list">
+            <li class="sound-item" style="border-left-color: #6f5b98; font-size: 12px;">
+                <div>
+                    <span style="color: var(--accent-orange);">Hood_Anthem_2026.wav</span>
+                    <br>
+                    <span style="color: var(--text-muted);">↳ 🎹 Main_Pluck_Stem.wav</span>
+                </div>
+                <button style="background: none; border: none; color: #ff4444; cursor: pointer; font-weight: bold;">[X]</button>
+            </li>
+        </ul>
+
+    </div>
+</div>
