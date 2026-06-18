@@ -1,10 +1,10 @@
 <?php
 // src/config/db.php
 
-$host = '127.0.0.1'; // IP-Adresse statt localhost (sicherer bei XAMPP)
+$host = 'localhost'; // Muss mit dem 'localhost' beim GRANT übereinstimmen
 $dbname = 'wav_manager';
-$username = 'root';  // Wir nutzen den Standard-Admin
-$password = '';      // Bei XAMPP standardmäßig leer
+$username = 'wav_app_user'; // Spezieller User für die Web-App (C12: Eingeschränkte Rechte)
+$password = 'wav_secure_pass'; // Passwort für diesen User
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);

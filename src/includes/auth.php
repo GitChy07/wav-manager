@@ -1,57 +1,82 @@
 <?php
 // src/includes/auth.php
+require_once __DIR__ . '/../config/db.php';
 
+// C8: Session-Handling einsetzen
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-require_once __DIR__ . '/../config/db.php';
+function isLoggedIn() {
+    return isset($_SESSION['user_id']) && !empty($_SESSION['user_id']);
+}
 
-$error_message = '';
+function registerUser($pdo, $username, $email, $genre, $password) {
+    $stmt = $pdo->prepare("SELECT id FROM users WHERE username = ?");
+    $stmt->execute([$username]);
+    if ($stmt->fetch()) {
+        return "Dieser Producer existiert bereits.";
+    }
 
-// Pfad für deine eigene Log-Datei direkt im Hauptordner 'wav_manager'
-$local_log = __DIR__ . '/../../debug.log';
+    $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action_login'])) {
-    $username = trim($_POST['username'] ?? '');
-    $password = $_POST['password'] ?? '';
-
-    if (!empty($username) && !empty($password)) {
-        
-        $stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username");
-        $stmt->execute(['username' => $username]);
-        $user = $stmt->fetch();
-
-        if ($user && password_verify($password, $user['password_hash'])) {
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
-            
-            // Eigener Log: Erfolg registrieren
-            $log_msg = "[" . date('Y-m-d H:i:s') . "] SUCCESS: Producer '" . $username . "' ist eingeloggt.\n";
-            file_put_contents($local_log, $log_msg, FILE_APPEND);
-            
-            header("Location: index.php");
-            exit;
-        } else {
-            // Eigener Log: Fehlgeschlagenen Versuch registrieren
-            $reason = !$user ? "User nicht gefunden" : "Passwort falsch";
-            $log_msg = "[" . date('Y-m-d H:i:s') . "] FAILED: Login für '" . $username . "' fehlgeschlagen. Grund: $reason\n";
-            file_put_contents($local_log, $log_msg, FILE_APPEND);
-            
-            $error_message = "ACCESS DENIED: Invalid Name or Password!";
+    try {
+        $insertStmt = $pdo->prepare("INSERT INTO users (username, email, genre, password_hash) VALUES (?, ?, ?, ?)");
+        if ($insertStmt->execute([$username, $email, $genre, $password_hash])) {
+            return true;
         }
-    } else {
-        $error_message = "Please fill in all fields!";
+        return "Fehler beim Speichern.";
+    } catch (PDOException $e) {
+        return "Datenbankfehler: " . $e->getMessage();
     }
 }
 
-if (isset($_GET['action']) && $_GET['action'] === 'logout') {
+function loginUser($pdo, $username, $password) {
+    $stmt = $pdo->prepare("SELECT id, email, genre, password_hash FROM users WHERE username = ?");
+    $stmt->execute([$username]);
+    $row = $stmt->fetch();
+    
+    // C14: Anmeldung (password_verify)
+    if ($row && password_verify($password, $row['password_hash'])) {
+        // C10: Session-Angriffe erschweren
+        session_regenerate_id(true);
+        $_SESSION['user_id'] = $row['id'];
+        $_SESSION['username'] = $username;
+        $_SESSION['email'] = $row['email'];
+        $_SESSION['genre'] = $row['genre'];
+        return true;
+    }
+    return "Benutzername oder Passwort falsch.";
+}
+
+function logoutUser() {
+    // C9: Abmeldung
     session_destroy();
+    setcookie(session_name(), '', time() - 3600, '/');
     header("Location: index.php");
     exit;
 }
 
-function isLoggedIn() {
-    return isset($_SESSION['user_id']);
+// C15: Profil bearbeiten / Passwort ändern
+function updateProfile($pdo, $user_id, $email, $genre, $new_password = '') {
+    try {
+        if (!empty($new_password)) {
+            $password_hash = password_hash($new_password, PASSWORD_DEFAULT);
+            $stmt = $pdo->prepare("UPDATE users SET email = ?, genre = ?, password_hash = ? WHERE id = ?");
+            $success = $stmt->execute([$email, $genre, $password_hash, $user_id]);
+        } else {
+            $stmt = $pdo->prepare("UPDATE users SET email = ?, genre = ? WHERE id = ?");
+            $success = $stmt->execute([$email, $genre, $user_id]);
+        }
+        
+        if ($success) {
+            $_SESSION['email'] = $email;
+            $_SESSION['genre'] = $genre;
+            return true;
+        }
+        return "Daten konnten nicht aktualisiert werden.";
+    } catch (PDOException $e) {
+        return "Datenbankfehler: " . $e->getMessage();
+    }
 }
 ?>
