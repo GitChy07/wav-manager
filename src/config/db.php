@@ -1,18 +1,21 @@
 <?php
 // src/config/db.php
 
-$host = 'localhost'; // Muss mit dem 'localhost' beim GRANT übereinstimmen
+$host = 'localhost'; 
 $dbname = 'wav_manager';
-$username = 'wav_app_user'; // Spezieller User für die Web-App (C12: Eingeschränkte Rechte)
-$password = 'wav_secure_pass'; // Passwort für diesen User
+$username = 'wav_app_user'; 
+$password = 'wav_secure_pass'; 
 
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-    
-    // Wenn du das im Browser siehst, läuft alles!
-    // echo "Verbindung erfolgreich!"; 
+    $dsn = "mysql:host=$host;dbname=$dbname;charset=utf8mb4";
+    $options = [
+        PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        // Das hier behebt den Mix of Collations Fehler zuverlässig:
+        PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci"
+    ];
+
+    $pdo = new PDO($dsn, $username, $password, $options);
     
 } catch (PDOException $e) {
     die("Datenbankverbindung fehlgeschlagen: " . $e->getMessage());

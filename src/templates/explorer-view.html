@@ -1,25 +1,463 @@
 <!doctype html>
-<div class="fl-panel panel-explorer">
-    <div class="fl-window-header">📂 SAMPLE BROWSER (TRACKS, STEMS & ONE-SHOTS)</div>
-    <div class="fl-window-body" style="flex: 1; overflow-y: auto;">
+<div class="studio-layout" id="studio-layout">
+    
+    <div class="fl-panel panel-explorer">
+        <div class="fl-window-header">📂 SAMPLE BROWSER (DATABASE LIVE SEARCH)</div>
         
-        <ul class="sound-list">
-            <li class="sound-item active">
-                <div>🎵 Hood_Anthem_2026.wav <span style="color:var(--text-muted); font-size:11px;">[Track]</span></div>
-                <div>
-                    <span class="tag-badge">140 BPM</span>
-                    <span class="tag-badge">C-Min</span>
-                </div>
-            </li>
-            <li class="sound-item">
-                <div>🎹 Main_Pluck_Stem.wav <span style="color:var(--text-muted); font-size:11px;">[Stem]</span></div>
-                <div><span class="tag-badge">Hoodtrap</span></div>
-            </li>
-            <li class="sound-item">
-                <div>🥁 Sub_808_OneShot.wav <span style="color:var(--text-muted); font-size:11px;">[One-Shot]</span></div>
-                <div><span class="tag-badge">Distorted</span></div>
-            </li>
-        </ul>
+        <div class="filter-bar" style="background: rgba(0,0,0,0.2); padding: 12px; border-bottom: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 10px;">
+            
+            <div style="display: flex; gap: 8px;">
+                <input type="text" id="search-input" class="fl-input" placeholder="🔍 Search (e.g. 'kick', '#lofi', '#dark')..." oninput="triggerSearch()" style="flex: 2; font-size: 13px;">
+                
+                <select id="filter-type" class="relation-select" onchange="handleTypeChange()" style="flex: 1; margin-top: 0; padding: 6px;">
+                    <option value="">All Types</option>
+                    <option value="one_shot">🥁 One-Shots</option>
+                    <option value="sample">🎹 Stems/Samples</option>
+                    <option value="song">🎵 Tracks/Mixes</option>
+                </select>
+            </div>
 
+            <div id="advanced-attributes-row" style="display: none; flex-direction: column; gap: 10px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px;">
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    
+                    <select id="filter-key" class="relation-select" onchange="triggerSearch()" style="flex: 1; margin-top: 0; padding: 6px;">
+                        <option value="">All Keys</option>
+                        <optgroup label="Major (Dur)">
+                            <option value="C">C</option><option value="G">G</option><option value="D">D</option><option value="A">A</option><option value="E">E</option><option value="B">B</option><option value="F#">F#</option><option value="F">F</option><option value="Bb">Bb</option><option value="Eb">Eb</option><option value="Ab">Ab</option><option value="Db">Db</option>
+                        </optgroup>
+                        <optgroup label="Minor (Moll)">
+                            <option value="Am">Am</option><option value="Em">Em</option><option value="Bm">Bm</option><option value="F#m">F#m</option><option value="C#m">C#m</option><option value="G#m">G#m</option><option value="D#m">D#m</option><option value="Dm">Dm</option><option value="Gm">Gm</option><option value="Cm">Cm</option><option value="Fm">Fm</option><option value="Bbm">Bbm</option>
+                        </optgroup>
+                    </select>
+
+                    <div style="display: flex; flex-direction: column; flex: 2; background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 3px; padding: 6px 10px;">
+                        <div style="display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted); font-weight: bold; letter-spacing: 0.5px;">
+                            <span>BPM RANGE</span>
+                            <span id="bpm-range-display" style="color: #4facfe;">60 - 200 BPM</span>
+                        </div>
+                        
+                        <div class="dual-slider-container">
+                            <div class="slider-track-bg"></div>
+                            <input type="range" id="filter-bpm-min" min="60" max="200" value="60" oninput="controlMinSlider()">
+                            <input type="range" id="filter-bpm-max" min="60" max="200" value="200" oninput="controlMaxSlider()">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="fl-window-body">
+            <div id="search-counter" style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px; font-style: italic; padding-left: 5px;">
+                Loading archive...
+            </div>
+            <ul class="sound-list" id="main-sound-list"></ul>
+        </div>
+    </div>
+
+    <div class="fl-panel panel-inspector">
+        <div class="fl-window-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <span>🎛️ ENGINE INSPECTOR</span>
+            <span class="close-inspector-btn" onclick="closeInspector()" style="cursor: pointer;">[X]</span>
+        </div>
+        
+        <div class="fl-window-body">
+            <div id="inspector-content" style="width: 100%; text-align: center;">
+                <div class="cover-placeholder">
+                    <span style="font-size: 45px; opacity: 0.25;" id="cover-icon">🎵</span>
+                    <div style="position: absolute; bottom: 5px; right: 8px; font-size: 8px; color: var(--text-muted); letter-spacing: 1px; font-weight: bold;">NO COVER</div>
+                </div>
+
+                <h3 id="info-title" style="margin: 0 0 5px 0; color: var(--text-light); font-size: 15px; word-break: break-all;">-</h3>
+                <span id="info-type" class="tag-badge" style="background: #4facfe; color: #fff; font-weight: bold; padding: 3px 8px; border-radius: 3px; display: inline-block; margin-bottom: 15px;">-</span>
+                
+                <div style="margin: 15px 0;">
+                    <audio id="info-player" controls style="width: 100%; border-radius: 4px; background: #222; outline: none;"></audio>
+                </div>
+
+                <div id="info-attributes" style="text-align: left; background: rgba(0,0,0,0.2); padding: 12px; border-radius: 4px; border: 1px solid #2d2d2d; font-size: 13px; margin-bottom: 15px;"></div>
+
+                <div id="relation-section" style="display: none; text-align: left; background: rgba(79, 172, 254, 0.05); padding: 12px; border-radius: 4px; border: 1px solid rgba(79, 172, 254, 0.2); font-size: 13px; margin-bottom: 15px;">
+                    <strong style="color: #4facfe;">🔗 Sound Relation</strong>
+                    <p style="font-size: 11px; color: var(--text-muted); margin: 4px 0 8px 0;">Verknüpfe diesen One-Shot mit einem Track oder Stem:</p>
+                    
+                    <form id="relation-form" onsubmit="saveRelation(event)">
+                        <input type="hidden" name="one_shot_id" id="relation-one-shot-id" value="">
+                        <select name="target_sound" id="relation-target-select" class="relation-select"></select>
+                        <button type="submit" class="tag-badge" style="background: #4facfe; color:#000; border:none; padding: 4px 10px; margin-top:8px; cursor:pointer; font-weight:bold; border-radius:3px; transition: background 0.2s;">Link Relation</button>
+                    </form>
+                </div>
+
+                <div style="border-top: 1px solid #2d2d2d; padding-top: 15px; margin-top: 15px;">
+                    <form action="includes/delete.php" method="POST" onsubmit="return confirm('Möchtest du diesen Sound wirklich unwiderruflich aus der Engine löschen?');">
+                        <input type="hidden" name="sound_id" id="delete-sound-id" value="">
+                        <input type="hidden" name="type" id="delete-sound-type" value="">
+                        <button type="submit" class="btn-danger">❌ Delete Sound from Disk & DB</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+<script>
+let searchTimeout;
+let allSoundsCached = [];
+
+document.addEventListener("DOMContentLoaded", () => {
+    triggerSearch(); 
+});
+
+function handleTypeChange() {
+    const typeSelect = document.getElementById('filter-type').value;
+    const advancedRow = document.getElementById('advanced-attributes-row');
+    
+    if (typeSelect === 'sample' || typeSelect === 'song') {
+        advancedRow.style.display = 'flex';
+    } else {
+        advancedRow.style.display = 'none';
+        document.getElementById('filter-key').value = "";
+        document.getElementById('filter-bpm-min').value = 60;
+        document.getElementById('filter-bpm-max').value = 200;
+        document.getElementById('bpm-range-display').innerText = "60 - 200 BPM";
+    }
+    triggerSearch();
+}
+
+function controlMinSlider() {
+    const minSlider = document.getElementById('filter-bpm-min');
+    const maxSlider = document.getElementById('filter-bpm-max');
+    if (parseInt(minSlider.value) >= parseInt(maxSlider.value)) {
+        minSlider.value = maxSlider.value - 2;
+    }
+    updateBpmDisplay();
+    triggerSearch();
+}
+
+function controlMaxSlider() {
+    const minSlider = document.getElementById('filter-bpm-min');
+    const maxSlider = document.getElementById('filter-bpm-max');
+    if (parseInt(maxSlider.value) <= parseInt(minSlider.value)) {
+        maxSlider.value = parseInt(minSlider.value) + 2;
+    }
+    updateBpmDisplay();
+    triggerSearch();
+}
+
+function updateBpmDisplay() {
+    const min = document.getElementById('filter-bpm-min').value;
+    const max = document.getElementById('filter-bpm-max').value;
+    document.getElementById('bpm-range-display').innerText = `${min} - ${max} BPM`;
+}
+
+function triggerSearch() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+        executeSqlFetch();
+    }, 120);
+}
+
+async function executeSqlFetch() {
+    const search = document.getElementById('search-input').value;
+    const type = document.getElementById('filter-type').value;
+    const key = document.getElementById('filter-key').value;
+    const bpmMin = document.getElementById('filter-bpm-min').value;
+    const bpmMax = document.getElementById('filter-bpm-max').value;
+
+    try {
+        const url = `includes/search_sounds.php?search=${encodeURIComponent(search)}&type=${type}&key=${key}&bpm_min=${bpmMin}&bpm_max=${bpmMax}`;
+        
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+
+        const sounds = await response.json();
+        if (sounds.error) throw new Error(sounds.error);
+        
+        allSoundsCached = sounds; 
+        renderSoundList(sounds);
+        updateRelationDropdown(sounds);
+        
+    } catch (error) {
+        console.error("Engine Fetch Error:", error);
+        document.getElementById('search-counter').innerText = "System Error";
+        document.getElementById('main-sound-list').innerHTML = `
+            <li style="color: #ff5e62; padding: 20px; text-align: center; list-style: none; font-size: 13px; font-weight: bold;">
+                ❌ Datenbank-Verbindungsfehler.<br>
+                <span style="font-weight: normal; font-size: 11px; color: var(--text-muted);">${error.message}</span>
+            </li>
+        `;
+    }
+}
+
+function renderSoundList(sounds) {
+    const listContainer = document.getElementById('main-sound-list');
+    const counterBox = document.getElementById('search-counter');
+    listContainer.innerHTML = '';
+
+    if (sounds.length === 0) {
+        counterBox.innerText = "Found 0 sounds";
+        listContainer.innerHTML = `<li style="color: var(--text-muted); padding: 20px; text-align: center; list-style: none; font-size: 13px;">❌ No matching sounds found in database.</li>`;
+        return;
+    }
+
+    counterBox.innerText = `Found ${sounds.length} sound${sounds.length !== 1 ? 's' : ''}`;
+
+    sounds.forEach(sound => {
+        let icon = '🥁'; 
+        let displayType = 'One-Shot';
+        if (sound.type === 'sample') { icon = '🎹'; displayType = 'Stem/Sample'; }
+        if (sound.type === 'song') { icon = '🎵'; displayType = 'Track'; }
+
+        const li = document.createElement('li');
+        li.className = 'sound-item';
+        li.onclick = function() { selectSound(this); };
+        
+        li.setAttribute('data-id', sound.id);
+        li.setAttribute('data-title', sound.title);
+        li.setAttribute('data-type', sound.type);
+        li.setAttribute('data-description', sound.description || '');
+        li.setAttribute('data-bpm', sound.bpm || '');
+        li.setAttribute('data-key', sound.music_key || '');
+        li.setAttribute('data-source', sound.source_description || '');
+        li.setAttribute('data-tags', sound.tags || '');
+        li.setAttribute('data-file', sound.file_path);
+
+        let bpmBadge = sound.bpm ? `<span class="tag-badge">${sound.bpm} BPM</span>` : '';
+        let keyBadge = sound.music_key ? `<span class="tag-badge" style="color: #00f2fe;">${sound.music_key}</span>` : '';
+
+        li.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <div>
+                    ${icon} <strong>${sound.title}.wav</strong>
+                    <span style="color:var(--text-muted); font-size:11px; margin-left: 5px;">[${displayType}]</span>
+                </div>
+                <div>
+                    ${bpmBadge}
+                    ${keyBadge}
+                </div>
+            </div>
+        `;
+        listContainer.appendChild(li);
+    });
+}
+
+function updateRelationDropdown(sounds) {
+    const select = document.getElementById('relation-target-select');
+    if(!select) return;
+    
+    select.innerHTML = '<option value="">-- Wähle Track/Stem aus --</option>';
+    sounds.forEach(target => {
+        if (target.type !== 'one_shot') {
+            const opt = document.createElement('option');
+            opt.value = `${target.type}_${target.id}`;
+            opt.textContent = `[${target.type.toUpperCase()}] ${target.title}`;
+            select.appendChild(opt);
+        }
+    });
+}
+
+function selectSound(element) {
+    const isInspectorOpen = document.getElementById('studio-layout').classList.contains('inspector-open');
+    const isAlreadyActive = element.classList.contains('active');
+
+    if (isInspectorOpen && isAlreadyActive) {
+        closeInspector();
+        return;
+    }
+
+    document.querySelectorAll('.sound-item').forEach(item => item.classList.remove('active'));
+    element.classList.add('active');
+
+    const id = element.getAttribute('data-id');
+    const title = element.getAttribute('data-title');
+    const type = element.getAttribute('data-type');
+    const description = element.getAttribute('data-description');
+    const bpm = element.getAttribute('data-bpm');
+    const key = element.getAttribute('data-key');
+    const source = element.getAttribute('data-source');
+    const tags = element.getAttribute('data-tags');
+    const file = element.getAttribute('data-file');
+
+    document.getElementById('studio-layout').classList.add('inspector-open');
+    document.getElementById('info-title').innerText = title + '.wav';
+    
+    document.getElementById('delete-sound-id').value = id;
+    document.getElementById('delete-sound-type').value = type;
+    document.getElementById('relation-one-shot-id').value = id;
+
+    const typeLabel = document.getElementById('info-type');
+    const coverIcon = document.getElementById('cover-icon');
+    const relationSection = document.getElementById('relation-section');
+    
+    if (type === 'one_shot') {
+        typeLabel.innerText = 'ONE-SHOT';
+        typeLabel.style.background = '#ff5e62';
+        coverIcon.innerText = '🥁';
+        relationSection.style.display = 'block';
+    } else {
+        relationSection.style.display = 'none';
+        if (type === 'sample') {
+            typeLabel.innerText = 'SAMPLE / STEM';
+            typeLabel.style.background = '#4facfe';
+            coverIcon.innerText = '🎹';
+        } else if (type === 'song') {
+            typeLabel.innerText = 'TRACK / FULL MIX';
+            typeLabel.style.background = '#00f2fe';
+            coverIcon.innerText = '🎵';
+        }
+    }
+
+    const player = document.getElementById('info-player');
+    player.src = '../' + file; 
+    player.load();
+    player.play().catch(err => console.log("Autoplay blockiert"));
+
+    // --- NEU: Dynamisches Formular für Metadaten ---
+    const attrBox = document.getElementById('info-attributes');
+    
+    let formHtml = `<form id="edit-metadata-form" onsubmit="saveMetadata(event)">`;
+    formHtml += `<input type="hidden" name="id" value="${id}">`;
+    formHtml += `<input type="hidden" name="type" value="${type}">`;
+    
+    formHtml += `<div style="margin-bottom: 8px;"><strong>Title:</strong><br>
+                 <input type="text" name="title" value="${title}" class="inspector-input"></div>`;
+
+    if (type === 'sample' || type === 'song') {
+        formHtml += `<div style="margin-bottom: 8px; display: flex; gap: 10px;">
+                        <div style="flex: 1;"><strong>Tempo (BPM):</strong><br>
+                        <input type="number" name="bpm" value="${bpm || ''}" class="inspector-input"></div>
+                        <div style="flex: 1;"><strong>Key:</strong><br>
+                        <input type="text" name="key" value="${key || ''}" class="inspector-input"></div>
+                     </div>`;
+    }
+    
+    if (type === 'sample') {
+        formHtml += `<div style="margin-bottom: 8px;"><strong>Source:</strong><br>
+                     <input type="text" name="source_description" value="${source || ''}" class="inspector-input"></div>`;
+    }
+    
+    if (type === 'song') {
+        formHtml += `<div style="margin-bottom: 8px;"><strong>Tags:</strong><br>
+                     <input type="text" name="tags" value="${tags || ''}" class="inspector-input" placeholder="#dark #lofi"></div>`;
+    }
+
+    formHtml += `<button type="submit" class="btn-save" id="save-meta-btn">💾 Save Meta-Data</button>`;
+    formHtml += `</form>`;
+    
+    attrBox.innerHTML = formHtml;
+}
+
+function closeInspector() {
+    document.getElementById('studio-layout').classList.remove('inspector-open');
+    document.getElementById('info-player').pause();
+    document.querySelectorAll('.sound-item').forEach(item => item.classList.remove('active'));
+}
+
+// --- NEU: AJAX Funktionen ---
+
+async function saveMetadata(event) {
+    event.preventDefault();
+    const btn = document.getElementById('save-meta-btn');
+    btn.innerText = "⏳ Saving...";
+    
+    const formData = new FormData(event.target);
+    try {
+        const response = await fetch('includes/update_sound.php', {
+            method: 'POST',
+            body: formData
+        });
+        const result = await response.json();
+        
+        if (result.success) {
+            btn.innerText = "✅ Saved!";
+            btn.style.background = "#28a745";
+            setTimeout(() => { 
+                btn.innerText = "💾 Save Meta-Data"; 
+                btn.style.background = "#4facfe";
+                // Lade die Liste neu, um den neuen Titel/BPM sofort im Explorer zu sehen
+                triggerSearch(); 
+            }, 1500);
+        } else {
+            alert("Error: " + result.error);
+            btn.innerText = "💾 Save Meta-Data";
+        }
+    } catch (error) {
+        console.error("Speicherfehler:", error);
+        alert("Server Fehler beim Speichern.");
+        btn.innerText = "💾 Save Meta-Data";
+    }
+}
+
+async function saveRelation(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const btn = event.target.querySelector('button[type="submit"]');
+    const originalText = btn.innerText;
+    
+    if(document.getElementById('relation-target-select').value === "") {
+        alert("Bitte wähle einen Track oder Stem aus dem Dropdown aus.");
+        return;
+    }
+
+    btn.innerText = "⏳ Linking...";
+    try {
+        const response = await fetch('includes/relations.php', {
+            method: 'POST',
+            body: formData
+        });
+        const result = await response.json();
+        
+        if (result.success) {
+            btn.innerText = "🔗 Linked Successfully!";
+            btn.style.background = "#28a745";
+            setTimeout(() => { 
+                btn.innerText = originalText; 
+                btn.style.background = "#4facfe";
+            }, 2000);
+        } else {
+            alert("Fehler: " + result.error);
+            btn.innerText = originalText;
+        }
+    } catch (error) {
+        console.error("Relation Error:", error);
+        btn.innerText = originalText;
+    }
+}
+
+// KEYBOARD ARROWS NAVIGATION
+document.addEventListener('keydown', function(event) {
+    if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'SELECT') return;
+
+    if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+        event.preventDefault();
+        const player = document.getElementById('info-player');
+        if (player && player.src && player.src !== window.location.href) {
+            player.currentTime = 0;
+            player.play().catch(err => {});
+        }
+        return;
+    }
+
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        const visibleItems = Array.from(document.querySelectorAll('.sound-item'));
+        if (visibleItems.length === 0) return;
+
+        const currentActive = document.querySelector('.sound-item.active');
+        let currentIndex = visibleItems.indexOf(currentActive);
+
+        if (event.key === 'ArrowDown') {
+            if (currentIndex < visibleItems.length - 1) currentIndex++;
+            else if (currentIndex === -1) currentIndex = 0;
+        } else if (event.key === 'ArrowUp') {
+            if (currentIndex > 0) currentIndex--;
+        }
+
+        const nextItem = visibleItems[currentIndex];
+        if(nextItem) {
+            selectSound(nextItem);
+            nextItem.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        }
+    }
+});
+</script>

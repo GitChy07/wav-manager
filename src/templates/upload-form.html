@@ -1,0 +1,132 @@
+<div class="login-wrapper">
+    
+    <div class="fl-window" style="width: 450px;"> 
+        <div class="fl-window-header">
+            WAV-Manager // Add New Sound
+        </div>
+        
+        <div class="fl-window-body">
+            {{ERROR}}
+            {{SUCCESS}}
+
+            <form action="upload.php" method="POST" enctype="multipart/form-data">
+                
+                <div class="form-group">
+                    <label for="wav_file">WAV File select *</label>
+                    <input type="file" id="wav_file" name="wav_file" accept=".wav" class="fl-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description / Notes</label>
+                    <textarea id="description" name="description" placeholder="e.g. Hard hitting distorted kick..." class="fl-input" rows="2" style="resize: vertical;"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="type">Type *</label>
+                    <select id="type" name="type" class="fl-input" onchange="toggleEngineFields()" required>
+                        <option value="">-- Select Type --</option>
+                        <option value="one_shot">One-Shot (Table: one_shots)</option>
+                        <option value="sample">Sample / Stem (Table: samples)</option>
+                        <option value="song">Track / Full Mix (Table: songs)</option>
+                    </select>
+                </div>
+
+                <div id="dynamic-engine-panel" style="display: none; background: rgba(0, 0, 0, 0.15); padding: 12px; border-left: 2px solid #4facfe; margin: 15px 0; border-radius: 4px;">
+                    
+                    <div class="form-group" id="group-bpm" style="display: none;">
+                        <label for="bpm" id="label-bpm">BPM (Tempo) *</label>
+                        <input type="number" id="bpm" name="bpm" placeholder="e.g. 130" class="fl-input" min="1" max="999">
+                    </div>
+
+                    <div class="form-group" id="group-key" style="display: none;">
+                        <label for="music_key">Key (Tonart)</label>
+                        <input type="text" id="music_key" name="music_key" placeholder="e.g. Am, C#m" class="fl-input">
+                    </div>
+
+                    <div class="form-group" id="group-source" style="display: none;">
+                        <label for="source_description">Source Description</label>
+                        <input type="text" id="source_description" name="source_description" placeholder="e.g. Vinyl Rip, Roland TR-808" class="fl-input">
+                    </div>
+
+                    <div class="form-group" id="group-tags" style="display: none;">
+                        <label for="tags">Tags</label>
+                        <input type="text" id="tags" name="tags" placeholder="e.g. phonk, trap, ambient" class="fl-input">
+                    </div>
+
+                </div>
+
+                <div class="form-group" id="group-relation" style="display: none; background: rgba(79, 172, 254, 0.05); padding: 12px; border-left: 2px solid #4facfe; margin: 15px 0; border-radius: 4px;">
+                    <label for="target_sound" style="color: #4facfe; font-weight: bold;">🔗 Parent Sound / Origin (Optional)</label>
+                    <p style="font-size: 11px; color: #aaa; margin-bottom: 8px; margin-top: 2px;">Verknüpfe diesen Sound mit einem übergeordneten Track oder Stem:</p>
+                    <select id="target_sound" name="target_sound" class="fl-input">
+                        {{RELATION_OPTIONS}}
+                    </select>
+                </div>
+
+                <button type="submit" class="fl-btn" style="margin-top: 10px;">Load into Engine</button>
+            </form>
+            
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleEngineFields() {
+    const type = document.getElementById('type').value;
+    
+    const panel = document.getElementById('dynamic-engine-panel');
+    const groupBpm = document.getElementById('group-bpm');
+    const groupKey = document.getElementById('group-key');
+    const groupSource = document.getElementById('group-source');
+    const groupTags = document.getElementById('group-tags');
+    
+    // Relations-Elemente holen
+    const groupRelation = document.getElementById('group-relation');
+    const optgroupSongs = document.getElementById('optgroup-songs');
+    const optgroupSamples = document.getElementById('optgroup-samples');
+    
+    const bpmInput = document.getElementById('bpm');
+    const labelBpm = document.getElementById('label-bpm');
+
+    // Alles ausblenden & zurücksetzen
+    panel.style.display = 'none';
+    groupBpm.style.display = 'none';
+    groupKey.style.display = 'none';
+    groupSource.style.display = 'none';
+    groupTags.style.display = 'none';
+    groupRelation.style.display = 'none';
+    
+    if (optgroupSongs) optgroupSongs.style.display = 'none';
+    if (optgroupSamples) optgroupSamples.style.display = 'none';
+    document.getElementById('target_sound').value = ''; // Reset auf Standalone
+    bpmInput.required = false;
+
+    if (type === 'one_shot') {
+        // One-Shots können aus Samples stammen ODER direkt zu Songs gehören
+        groupRelation.style.display = 'block';
+        if (optgroupSongs) optgroupSongs.style.display = 'block';
+        if (optgroupSamples) optgroupSamples.style.display = 'block';
+    } 
+    else if (type === 'sample') {
+        panel.style.display = 'block';
+        groupBpm.style.display = 'block';
+        groupKey.style.display = 'block';
+        groupSource.style.display = 'block';
+        labelBpm.innerText = 'BPM (Tempo) *';
+        bpmInput.required = true; 
+
+        // Samples können Teil eines Songs sein (aber nicht Teil eines anderen Samples)
+        groupRelation.style.display = 'block';
+        if (optgroupSongs) optgroupSongs.style.display = 'block';
+    } 
+    else if (type === 'song') {
+        panel.style.display = 'block';
+        groupBpm.style.display = 'block';
+        groupKey.style.display = 'block';
+        groupTags.style.display = 'block';
+        labelBpm.innerText = 'BPM (Tempo)';
+        bpmInput.required = false;
+        // Songs sind die oberste Ebene, haben keine Parents
+    }
+}
+</script>

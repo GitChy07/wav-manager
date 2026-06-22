@@ -1,0 +1,35 @@
+```
+└── 📁wav-manager
+    └── 📁database
+        ├── wav_manager.sql
+    └── 📁src
+        └── 📁config
+            ├── db.php
+        └── 📁includes
+            ├── auth.php
+            ├── delete.php
+            ├── relations.php
+            ├── search-sounds.php
+            ├── sound-events.php
+        └── 📁templates
+            ├── editor-view.html
+            ├── explorer-view.html
+            ├── footer.html
+            ├── header.html
+            ├── login-form.html
+            ├── relations-view.html
+            ├── upload-form.html
+        ├── index.php
+        ├── profile.php
+        ├── register.php
+        ├── style.css
+        ├── test_login.php
+        ├── upload.php
+    └── 📁uploads
+        ├── wav_6a3921ca72e627.93640310.wav
+        ├── wav_6a3921ed925067.35604691.wav
+        ├── wav_6a393226a30497.70109669.wav
+    ├── .gitignore
+    ├── debug.log
+    └── README.md
+```

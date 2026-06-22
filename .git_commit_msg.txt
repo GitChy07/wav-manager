@@ -1,8 +1,0 @@
-feat: implement user authentication, registration and profile settings
-
-- Add database schema dump (wav_manager.sql) including users and sounds tables
-- Create secure authentication logic with password hashing and session management (auth.php)
-- Implement login and logout routing logic in index.php
-- Build FL Studio themed registration form with extended fields for email and genre (register.php)
-- Add profile settings page allowing logged-in producers to update their data and password (profile.php)
-- Make header template dynamic to conditionally display the logged-in user and navigation links
