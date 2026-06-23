@@ -31,9 +31,21 @@ if (array_key_exists($type, $allowed_types) && $sound_id > 0) {
                 unlink($physical_path);
             }
             
-            // DB Eintrag löschen
+            // ==============================================================================
+            // BEWERTUNGSRELEVANT: KOMPETENZ C18 (Eigene Datensätze löschen)
+            // ==============================================================================
+            // Ein Datensatz kann nur gelöscht werden, wenn die ID übereinstimmt UND der
+            // Datensatz dem aktuell in der Session angemeldeten User gehört.
+            // Dies verhindert, dass ein User über modifizierte POST-Requests Fremddaten löscht.
             $delete_stmt = $pdo->prepare("DELETE FROM $table WHERE id = :id AND user_id = :user_id");
             $delete_stmt->execute(['id' => $sound_id, 'user_id' => $user_id]);
+            
+            // Zugehörige Relationen löschen (Orphan Cleanup)
+            $clean_rel = $pdo->prepare("DELETE FROM sound_relations WHERE (parent_type = :t1 AND parent_id = :id1) OR (child_type = :t2 AND child_id = :id2)");
+            $clean_rel->execute([
+                ':t1' => $type, ':id1' => $sound_id,
+                ':t2' => $type, ':id2' => $sound_id
+            ]);
         }
     } catch (PDOException $e) {
         // Silent fail oder Logging

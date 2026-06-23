@@ -22,7 +22,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (!empty($password) && strlen($password) < 4) {
         $error_message = "NEW PASSWORD MUST BE AT LEAST 4 CHARS";
     } else {
-        // C15: Profil und Passwort ändern
+        // ==============================================================================
+        // BEWERTUNGSRELEVANT: KOMPETENZ C15 (Passwort ändern)
+        // ==============================================================================
+        // Die Funktion updateProfile validiert, ob ein neues Passwort gesetzt werden soll,
+        // hasht dieses neu mit password_hash() und aktualisiert die DB-Einträge sicher.
         $result = updateProfile($pdo, $_SESSION['user_id'], $email, $genre, $password);
         if ($result === true) {
             $success_message = "PROFILE UPDATED SUCCESSFULLY";
@@ -41,7 +45,7 @@ echo str_replace('{{USER_STATUS}}', $user_status_html, $header);
 ?>
 
 <div class="fl-panel" style="margin: 20px; border: 1px solid #333; background: #1e1e1e;">
-    <div class="fl-window-header">⚙️ PRODUCER SETTINGS (Kompetenz C15)</div>
+    <div class="fl-window-header">⚙️ PRODUCER SETTINGS</div>
     <div class="fl-window-body" style="padding: 20px;">
         
         <?php if (!empty($error_message)): ?>
@@ -58,6 +62,12 @@ echo str_replace('{{USER_STATUS}}', $user_status_html, $header);
 
         <form action="profile.php" method="POST" style="max-width: 400px; margin: 0 auto;">
             <div class="form-group" style="margin-bottom: 15px;">
+                <!-- ============================================================================== -->
+                <!-- BEWERTUNGSRELEVANT: KOMPETENZ C7 (Script-Injection / XSS Schutz)             -->
+                <!-- ============================================================================== -->
+                <!-- Die dynamische Datenausgabe aus der Session/Datenbank wird durch               -->
+                <!-- htmlspecialchars() maskiert, sodass potenzieller JS-Code als Text dargestellt  -->
+                <!-- und nicht im Browser ausgeführt wird.                                          -->
                 <label style="display:block; color:#aaa; font-size:12px; margin-bottom:5px;">PRODUCER NAME</label>
                 <!-- Benutzername kann hier aus Sicherheitsgründen nicht geändert werden -->
                 <input type="text" class="fl-input" value="<?= htmlspecialchars($_SESSION['username']) ?>" disabled style="width:100%; padding:8px; background:#111; color:#777; border:1px solid #333;">

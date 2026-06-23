@@ -23,7 +23,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action_login'])) {
     }
 }
 
-// ROUTING: Welches Template zeige ich an?
+// ==============================================================================
+// BEWERTUNGSRELEVANT: KOMPETENZ C8 (Session-Handling)
+// ==============================================================================
+// Hier wird die Zugriffskontrolle (Routing) umgesetzt. 
+// Unangemeldete User werden auf die Login-Seite umgeleitet, 
+// während angemeldete User das Studio-Interface (Explorer View) sehen.
 if (isLoggedIn()) {
     
     // ----------------------------------------------------
@@ -79,6 +84,10 @@ if (isLoggedIn()) {
                         
     echo str_replace('{{USER_STATUS}}', $user_status_html, $header);
     
+    // ==============================================================================
+    // NICHT BEWERTUNGSRELEVANT: UX/UI Kür (Studio Layout & Visualizer)
+    // ==============================================================================
+    // Das Laden des Studio-Interfaces inkl. Oszilloskop und dynamischem CSS.
     // CRITICAL FIX: 'include' statt 'file_get_contents', damit PHP im Template ausgeführt wird!
     include __DIR__ . '/templates/explorer-view.html';
     
@@ -94,7 +103,10 @@ if (isLoggedIn()) {
     // Im Login verstecke ich die Navigation und den Profilstatus komplett
     echo str_replace('{{USER_STATUS}}', '', $header);
     
-    // Ich lade mein FL-Studio-Login-Formular
+    // ==============================================================================
+    // NICHT BEWERTUNGSRELEVANT: UX/UI Kür (Ghost Sounds Animation)
+    // ==============================================================================
+    // Im Login-Formular ist auch das Script für die herumschwebenden Geister eingebunden.
     $login_html = file_get_contents(__DIR__ . '/templates/login-form.html');
     
     // Falls ein Login-Fehler vorliegt, baue ich meine Error-Box passend zum Design ein

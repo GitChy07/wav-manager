@@ -3,10 +3,11 @@
 header('Content-Type: application/json');
 require_once __DIR__ . '/../config/db.php';
 
-$one_shot_id = isset($_POST['one_shot_id']) ? (int)$_POST['one_shot_id'] : 0;
+$child_id = isset($_POST['child_id']) ? (int)$_POST['child_id'] : 0;
+$child_type = isset($_POST['child_type']) ? $_POST['child_type'] : '';
 $target_raw = isset($_POST['target_sound']) ? $_POST['target_sound'] : '';
 
-if ($one_shot_id === 0 || empty($target_raw)) {
+if ($child_id === 0 || empty($child_type) || empty($target_raw)) {
     echo json_encode(['success' => false, 'error' => 'Fehlende Zuordnungsdaten.']);
     exit;
 }
@@ -19,7 +20,11 @@ if (count($parts) !== 2) {
 
 $parent_type = $parts[0];
 $parent_id = (int)$parts[1];
-$child_type = 'one_shot'; // Da es aus relations.php kommt, ist das Child hier ein One-Shot
+
+if ($parent_type === $child_type && $parent_id === $child_id) {
+    echo json_encode(['success' => false, 'error' => 'Ein Sound kann sich nicht selbst zugeordnet werden.']);
+    exit;
+}
 
 try {
     // Prüfen nach neuem Schema parent/child
@@ -28,7 +33,7 @@ try {
         ':p_type' => $parent_type,
         ':p_id'   => $parent_id,
         ':c_type' => $child_type,
-        ':c_id'   => $one_shot_id
+        ':c_id'   => $child_id
     ]);
     
     if ($check->rowCount() > 0) {
@@ -42,7 +47,7 @@ try {
         ':p_type' => $parent_type,
         ':p_id'   => $parent_id,
         ':c_type' => $child_type,
-        ':c_id'   => $one_shot_id
+        ':c_id'   => $child_id
     ]);
 
     echo json_encode(['success' => true]);

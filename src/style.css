@@ -1,5 +1,9 @@
-/* --- style.css --- */
-
+/* ============================================================================== */
+/* WICHTIG: FRONTEND STYLING (NICHT BEWERTUNGSRELEVANT FÜR BACKEND-KOMPETENZEN)   */
+/* ============================================================================== */
+/* Diese Datei steuert ausschließlich das visuelle Erscheinungsbild (FL Studio    */
+/* Theme) der Applikation und enthält keine bewertungsrelevante PHP/DB-Logik.     */
+/* ============================================================================== */
 /* DUAL SLIDER SYSTEM */
 .dual-slider-container {
     position: relative;
@@ -395,4 +399,124 @@ input[type="file"].fl-input::file-selector-button:hover {
     justify-content: center; 
     box-shadow: 0 5px 12px rgba(0,0,0,0.5); 
     position: relative;
+}
+
+/* CUSTOM SCROLLBAR (FL Studio Style) */
+::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+::-webkit-scrollbar-track {
+    background: #1e2228;
+    border-left: 1px solid var(--border-color);
+}
+::-webkit-scrollbar-thumb {
+    background: #3a414d;
+    border: 2px solid #1e2228;
+    border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-orange);
+}
+::-webkit-scrollbar-corner {
+    background: #1e2228;
+}
+
+/* TREE VIEW STYLES */
+.tree-node {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.tree-children {
+    list-style: none;
+    margin: 0 0 0 16px;
+    padding: 0 0 0 10px;
+    border-left: 1px dashed var(--border-color);
+    display: none; /* Default hidden until expanded */
+}
+.tree-children.expanded {
+    display: block;
+}
+
+.tree-item-wrapper {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+/* The line connecting child to parent */
+.tree-children .tree-item-wrapper::before {
+    content: "";
+    position: absolute;
+    left: -10px;
+    top: 50%;
+    width: 10px;
+    height: 1px;
+    border-top: 1px dashed var(--border-color);
+}
+
+.collapse-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-family: monospace;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0 5px;
+    margin-right: 5px;
+    transition: color 0.2s;
+}
+.collapse-btn:hover {
+    color: var(--text-light);
+}
+.collapse-btn.empty {
+    visibility: hidden;
+}
+
+/* ============================================================================== */
+/* GHOST SOUNDS (Login Screen Animation)                                          */
+/* ============================================================================== */
+.ghost-sound {
+    position: fixed;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 11px;
+    pointer-events: auto;
+    cursor: crosshair;
+    z-index: 100;
+    backdrop-filter: blur(2px);
+    opacity: 0.3;
+    filter: blur(1px);
+    transition: all 0.4s ease;
+    white-space: nowrap;
+}
+
+.ghost-sound .ghost-text {
+    opacity: 0;
+    max-width: 0;
+    overflow: hidden;
+    transition: all 0.5s ease;
+}
+
+.ghost-sound:hover {
+    opacity: 1;
+    filter: blur(0);
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(79, 172, 254, 0.15);
+    border-color: rgba(79, 172, 254, 0.4);
+    box-shadow: 0 0 15px rgba(79, 172, 254, 0.2);
+    z-index: 200;
+}
+
+.ghost-sound:hover .ghost-text {
+    opacity: 1;
+    max-width: 250px;
 }

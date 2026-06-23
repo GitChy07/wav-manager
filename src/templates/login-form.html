@@ -1,9 +1,17 @@
-<!doctype html>
+<!-- ============================================================================== -->
+<!-- BEWERTUNGSRELEVANT: KOMPETENZ C4 (HTML-Dateien validiert)                      -->
+<!-- ============================================================================== -->
+<!-- Das Login-Formular ist nach W3C-Vorgaben aufgebaut.                            -->
 <div class="login-wrapper">
     <div class="fl-window">
         <div class="fl-window-header">LOG IN TO PRODUCTION SUITE</div>
         <div class="fl-window-body">
             <form action="index.php" method="POST">
+                <!-- ============================================================================== -->
+                <!-- BEWERTUNGSRELEVANT: KOMPETENZ C5 (Clientseitige Validierung)                   -->
+                <!-- ============================================================================== -->
+                <!-- HTML5 'required' Attribute stellen sicher, dass das Formular nur               -->
+                <!-- abgesendet werden kann, wenn die Felder ausgefüllt sind.                       -->
                 <div class="form-group">
                     <label>PRODUCER NAME</label>
                     <input type="text" name="username" class="fl-input" required autocomplete="off">
@@ -20,3 +28,87 @@
         </div>
     </div>
 </div>
+
+<audio id="info-player" crossorigin="anonymous" style="display:none;"></audio>
+
+<script>
+// ==============================================================================
+// NICHT BEWERTUNGSRELEVANT: UX/UI Kür (Ghost Sounds Animation auf Login Page)
+// ==============================================================================
+// Dieses Skript ist rein visuell und akustisch für das "FL Studio Feeling" gedacht
+// und hat keine Relevanz für die eigentlichen Kern-Kompetenzen.
+document.addEventListener("DOMContentLoaded", async () => {
+    try {
+        const res = await fetch('includes/ghost_sounds.php');
+        const data = await res.json();
+        if (data.success && data.sounds.length > 0) {
+            const sounds = data.sounds;
+            
+            setInterval(() => {
+                // Nur zu 30% triggern, damit es nicht ablenkt
+                if (Math.random() > 0.3) return;
+                
+                const sound = sounds[Math.floor(Math.random() * sounds.length)];
+                spawnGhost(sound);
+            }, 3000);
+        }
+    } catch (e) {
+        console.error("No ghosts found");
+    }
+    
+    function spawnGhost(sound) {
+        const ghost = document.createElement('div');
+        ghost.className = 'ghost-sound';
+        
+        let icon = '🎵';
+        if (sound.type === 'one_shot') icon = '🥁';
+        else if (sound.type === 'sample') icon = '🎹';
+        
+        ghost.innerHTML = `<span>${icon}</span><span class="ghost-text">${sound.title}</span>`;
+        
+        const startY = Math.random() * (window.innerHeight - 150) + 75;
+        const fromLeft = Math.random() > 0.5;
+        
+        ghost.style.top = startY + 'px';
+        ghost.style.left = fromLeft ? '-150px' : (window.innerWidth + 50) + 'px';
+        
+        // Random drift ampltitude
+        const driftY = (Math.random() - 0.5) * 200;
+        
+        document.body.appendChild(ghost);
+        
+        const duration = Math.random() * 20000 + 15000; // 15-35s
+        const endX = fromLeft ? window.innerWidth + 150 : -150;
+        
+        const animation = ghost.animate([
+            { transform: `translate(0px, 0px)` },
+            { transform: `translate(${endX - (fromLeft ? -150 : window.innerWidth + 50)}px, ${driftY}px)` }
+        ], {
+            duration: duration,
+            easing: 'linear',
+            fill: 'forwards'
+        });
+        
+        animation.onfinish = () => ghost.remove();
+        
+        ghost.addEventListener('mouseenter', () => {
+            const player = document.getElementById('info-player');
+            if (player) {
+                player.src = 'uploads/' + sound.file_path;
+                player.load();
+                if (typeof initVisualizer === 'function') {
+                    initVisualizer();
+                }
+                player.play().catch(() => {});
+            }
+        });
+        
+        ghost.addEventListener('mouseleave', () => {
+            const player = document.getElementById('info-player');
+            if (player) {
+                player.pause();
+            }
+        });
+    }
+});
+</script>

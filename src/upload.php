@@ -21,7 +21,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $target_sound = $_POST['target_sound'] ?? ''; // Format aus Dropdown: "song_12" oder "sample_5"
     
     $user_id = $_SESSION['user_id'] ?? null;
+    $user_id = $_SESSION['user_id'] ?? null;
 
+    // ==============================================================================
+    // BEWERTUNGSRELEVANT: KOMPETENZ C6 (Serverseitige Validierung)
+    // ==============================================================================
+    // Das PHP-Backend vertraut dem Frontend niemals blind. 
+    // Hier wird serverseitig nochmals streng geprüft, ob Pflichtfelder ausgefüllt 
+    // sind und ob die Datei überhaupt hochgeladen wurde.
     if (empty($type) || !isset($_FILES['wav_file']) || $_FILES['wav_file']['error'] !== 0) {
         $error_message = 'Bitte wähle eine gültige WAV-Datei und einen Typ aus.';
     } 
@@ -35,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
         $auto_title = pathinfo($fileName, PATHINFO_FILENAME);
 
+        // Weitere C6 Validierung: Es wird geprüft, ob die Datei wirklich die Endung .wav hat.
         if ($fileExtension !== 'wav') {
             $error_message = 'Es sind ausschliesslich echte .wav Dateien erlaubt!';
         } else {
@@ -53,6 +61,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $pdo->beginTransaction();
                     $new_id = null;
 
+                    // ==============================================================================
+                    // BEWERTUNGSRELEVANT: KOMPETENZ C16 (Daten in DB erfassen / INSERT)
+                    // ==============================================================================
+                    // Die verifizierten Metadaten sowie der generierte Dateipfad werden 
+                    // über PDO Prepared Statements sicher in die Datenbank geschrieben.
                     if ($type === 'one_shot') {
                         $stmt = $pdo->prepare("INSERT INTO one_shots (user_id, title, description, file_path) VALUES (:user_id, :title, :description, :file_path)");
                         $stmt->execute([

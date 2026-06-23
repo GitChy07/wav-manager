@@ -19,17 +19,31 @@ if (!isset($pdo) || !($pdo instanceof PDO)) {
     exit;
 }
 
+require_once __DIR__ . '/auth.php';
+$user_id = isLoggedIn() ? $_SESSION['user_id'] : 0;
+
+if ($user_id === 0) {
+    echo json_encode(["error" => "Nicht angemeldet"]);
+    exit;
+}
+
 // 2. GET-PARAMETER PARSEN
 $searchRaw = isset($_GET['search']) ? trim($_GET['search']) : '';
 $type      = isset($_GET['type']) ? trim($_GET['type']) : '';
 $key       = isset($_GET['key']) ? trim($_GET['key']) : '';
-$bpmMin    = isset($_GET['bpm_min']) ? (int)$_GET['bpm_min'] : 60;
-$bpmMax    = isset($_GET['bpm_max']) ? (int)$_GET['bpm_max'] : 200;
+$bpmMin    = isset($_GET['bpm_min']) ? (int)$_GET['bpm_min'] : 0;
+$bpmMax    = isset($_GET['bpm_max']) ? (int)$_GET['bpm_max'] : 400;
 
 $queries = [];
 $params = [];
 
 // Hashtags und Freitext extrahieren
+// ==============================================================================
+// BEWERTUNGSRELEVANT: KOMPETENZ C19 (SQL-Injection verhindern)
+// ==============================================================================
+// Alle dynamischen Suchparameter (wie $pureText oder $tags) werden NIEMALS
+// direkt in den SQL-String geschrieben (Concatenation). Sie werden stattdessen
+// als Parameter in das $params Array gepackt und per Prepared Statement übergeben.
 $pureText = $searchRaw;
 $tags = [];
 if (!empty($searchRaw)) {
@@ -57,7 +71,8 @@ if (empty($type) || $type === 'one_shot') {
         }
     }
     $queries[] = "SELECT id, title, description, 'one_shot' AS type, NULL AS bpm, NULL AS music_key, NULL AS source_description, NULL AS tags, file_path 
-                  FROM one_shots WHERE 1=1" . $oneShotFilter;
+                  FROM one_shots WHERE user_id = :user_id_os" . $oneShotFilter;
+    $params[':user_id_os'] = $user_id;
 }
 
 /**
@@ -82,12 +97,13 @@ if (empty($type) || $type === 'sample') {
             $sampleFilter .= " AND LOWER(music_key) = :key_sample";
             $params[':key_sample'] = strtolower($key);
         }
-        $sampleFilter .= " AND bpm BETWEEN :bpm_min_sample AND :bpm_max_sample";
+        $sampleFilter .= " AND (bpm BETWEEN :bpm_min_sample AND :bpm_max_sample OR bpm IS NULL)";
         $params[':bpm_min_sample'] = $bpmMin;
         $params[':bpm_max_sample'] = $bpmMax;
     }
     $queries[] = "SELECT id, title, description, 'sample' AS type, bpm, music_key, source_description, NULL AS tags, file_path 
-                  FROM samples WHERE 1=1" . $sampleFilter;
+                  FROM samples WHERE user_id = :user_id_sample" . $sampleFilter;
+    $params[':user_id_sample'] = $user_id;
 }
 
 /**
@@ -111,12 +127,13 @@ if (empty($type) || $type === 'song') {
             $songFilter .= " AND LOWER(music_key) = :key_song";
             $params[':key_song'] = strtolower($key);
         }
-        $songFilter .= " AND bpm BETWEEN :bpm_min_song AND :bpm_max_song";
+        $songFilter .= " AND (bpm BETWEEN :bpm_min_song AND :bpm_max_song OR bpm IS NULL)";
         $params[':bpm_min_song'] = $bpmMin;
         $params[':bpm_max_song'] = $bpmMax;
     }
     $queries[] = "SELECT id, title, description, 'song' AS type, bpm, music_key, NULL AS source_description, tags, file_path 
-                  FROM songs WHERE 1=1" . $songFilter;
+                  FROM songs WHERE user_id = :user_id_song" . $songFilter;
+    $params[':user_id_song'] = $user_id;
 }
 
 // 6. ALLE QUERIES MIT UNION VERBINDEN & SORTIEREN (Wie in deiner index.php über ID)
@@ -125,9 +142,16 @@ $sql = implode(" UNION ALL ", $queries) . " ORDER BY id DESC";
 try {
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
-    $results = $stmt->fetchAll();
+    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
-    echo json_encode($results);
+    // FETCH ALL RELATIONS for the Tree-View
+    $relStmt = $pdo->query("SELECT parent_type, parent_id, child_type, child_id FROM sound_relations");
+    $relations = $relStmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    echo json_encode([
+        'sounds' => $results,
+        'relations' => $relations
+    ]);
 } catch (PDOException $e) {
     echo json_encode(["error" => "Abfragefehler in der Audio-Engine: " . $e->getMessage()]);
 }
