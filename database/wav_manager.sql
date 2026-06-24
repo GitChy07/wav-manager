@@ -96,6 +96,20 @@ CREATE TABLE `one_shots` (
   CONSTRAINT `oneshots_ibfk_2` FOREIGN KEY (`song_id`) REFERENCES `songs` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `sound_relations`
+--
+CREATE TABLE `sound_relations` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `parent_type` varchar(20) NOT NULL,
+  `parent_id` int(11) NOT NULL,
+  `child_type` varchar(20) NOT NULL,
+  `child_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Daten für Tabelle `users`
 --
