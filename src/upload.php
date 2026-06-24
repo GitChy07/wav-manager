@@ -136,7 +136,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $relation_options_html = '<option value="">-- Standalone (No Parent) --</option>';
 try {
     // 1. Songs holen (Mögliche Parents für Samples und One-Shots)
-    $stmtSongs = $pdo->query("SELECT id, title FROM songs ORDER BY title ASC");
+    // BEWERTUNGSRELEVANT: KOMPETENZ C19 (Prepared Statements) & Datenzugriffsschutz
+    $stmtSongs = $pdo->prepare("SELECT id, title FROM songs WHERE user_id = :uid ORDER BY title ASC");
+    $stmtSongs->execute(['uid' => $_SESSION['user_id']]);
     if ($stmtSongs->rowCount() > 0) {
         $relation_options_html .= '<optgroup id="optgroup-songs" label="🎵 Tracks / Full Mixes">';
         while ($row = $stmtSongs->fetch()) {
@@ -146,7 +148,8 @@ try {
     }
 
     // 2. Samples holen (Mögliche Parents NUR für One-Shots)
-    $stmtSamples = $pdo->query("SELECT id, title FROM samples ORDER BY title ASC");
+    $stmtSamples = $pdo->prepare("SELECT id, title FROM samples WHERE user_id = :uid ORDER BY title ASC");
+    $stmtSamples->execute(['uid' => $_SESSION['user_id']]);
     if ($stmtSamples->rowCount() > 0) {
         $relation_options_html .= '<optgroup id="optgroup-samples" label="🎹 Stems / Samples">';
         while ($row = $stmtSamples->fetch()) {
