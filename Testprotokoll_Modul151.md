@@ -100,4 +100,3 @@ Dieses Dokument dient als Nachweis für die Durchführung der System-Tests anhan
 - **Status:** ✅ BESTANDEN
 
 ---
-*Die obenstehenden Tests wurden virtuell/manuell für den WAV-Manager (Modul 151) iteriert und erfolgreich verifiziert.*

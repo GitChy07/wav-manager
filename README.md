@@ -13,7 +13,7 @@ Ein webbasierter Datei-Explorer und Metadaten-Editor für Audio-Samples (Tracks,
 - **Robustes Backend & Zeichenkonsistenz:** Striktes UTF-8-Handling (`utf8mb4_unicode_ci`) zur fehlerfreien Verarbeitung von Sonderzeichen in Sample-Namen sowie atomare Datenbank-Transaktionen beim Datei-Upload.
 - **Security First:** Umfassender Schutz vor SQL-Injections durch konsistenten Einsatz von Prepared Statements (PDO) und ein geschütztes Login-System.
 
-## 🛠️ Installationsanleitung (Kompetenz B1)
+## 🛠️ Installationsanleitung (Kompetenz C3)
 
 Diese detaillierte Anleitung beschreibt die vollständige lokale Inbetriebnahme des WAV-Managers.
 
