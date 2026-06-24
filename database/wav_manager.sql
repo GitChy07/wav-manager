@@ -42,6 +42,7 @@ CREATE TABLE `songs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `title` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
   `bpm` int(11) DEFAULT NULL,
   `music_key` varchar(10) DEFAULT NULL,
   `tags` varchar(255) DEFAULT NULL,
@@ -62,6 +63,7 @@ CREATE TABLE `samples` (
   `user_id` int(11) NOT NULL,
   `song_id` int(11) DEFAULT NULL,
   `title` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
   `bpm` int(11) NOT NULL,
   `music_key` varchar(10) DEFAULT NULL,
   `source_description` varchar(255) DEFAULT NULL,
@@ -84,6 +86,7 @@ CREATE TABLE `one_shots` (
   `user_id` int(11) NOT NULL,
   `song_id` int(11) DEFAULT NULL,
   `title` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
   `file_path` varchar(255) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
@@ -102,21 +105,21 @@ INSERT INTO `users` (`id`, `username`, `password_hash`, `created_at`) VALUES
 --
 -- Daten für Tabelle `songs`
 --
-INSERT INTO `songs` (`id`, `user_id`, `title`, `bpm`, `music_key`, `tags`, `file_path`) VALUES
-(1, 3, 'Demo Song - Summer Vibes', 120, 'Am', '#summer #house', 'demo_loop.wav');
+INSERT INTO `songs` (`id`, `user_id`, `title`, `description`, `bpm`, `music_key`, `tags`, `file_path`) VALUES
+(1, 3, 'Demo Song - Summer Vibes', NULL, 120, 'Am', '#summer #house', 'demo_loop.wav');
 
 --
 -- Daten für Tabelle `samples`
 --
-INSERT INTO `samples` (`id`, `user_id`, `song_id`, `title`, `bpm`, `music_key`, `source_description`, `file_path`) VALUES
-(1, 3, 1, 'Demo Loop - Synth Chords', 120, 'Am', 'Recorded with Prophet 08', 'demo_loop.wav');
+INSERT INTO `samples` (`id`, `user_id`, `song_id`, `title`, `description`, `bpm`, `music_key`, `source_description`, `file_path`) VALUES
+(1, 3, 1, 'Demo Loop - Synth Chords', NULL, 120, 'Am', 'Recorded with Prophet 08', 'demo_loop.wav');
 
 --
 -- Daten für Tabelle `one_shots`
 --
-INSERT INTO `one_shots` (`id`, `user_id`, `song_id`, `title`, `file_path`) VALUES
-(1, 3, 1, 'Demo Kick Drum', 'demo_kick.wav'),
-(2, 3, 1, 'Demo Snare Drum', 'demo_snare.wav');
+INSERT INTO `one_shots` (`id`, `user_id`, `song_id`, `title`, `description`, `file_path`) VALUES
+(1, 3, 1, 'Demo Kick Drum', NULL, 'demo_kick.wav'),
+(2, 3, 1, 'Demo Snare Drum', NULL, 'demo_snare.wav');
 
 COMMIT;
 
