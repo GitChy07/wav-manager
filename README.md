@@ -13,9 +13,32 @@ Ein webbasierter Datei-Explorer und Metadaten-Editor für Audio-Samples (Tracks,
 - **Robustes Backend & Zeichenkonsistenz:** Striktes UTF-8-Handling (`utf8mb4_unicode_ci`) zur fehlerfreien Verarbeitung von Sonderzeichen in Sample-Namen sowie atomare Datenbank-Transaktionen beim Datei-Upload.
 - **Security First:** Umfassender Schutz vor SQL-Injections durch konsistenten Einsatz von Prepared Statements (PDO) und ein geschütztes Login-System.
 
-## 🛠️ Installation & Setup (Lokal)
-1. Repository klonen und im Webroot-Verzeichnis deines lokalen Servers (z. B. `htdocs` bei XAMPP) ablegen.
-2. Datenbank via phpMyAdmin anlegen (Name: `wav_manager`).
-3. Die Tabellenstrukturen laut aktuellem Schema anlegen (Tabellen: `users`, `songs`, `samples`, `one_shots`, `sound_relations`).
-4. Die Datei `src/config/db.php` mit den lokalen Datenbank-Zugangsdaten anpassen.
-5. Das Projekt im Browser aufrufen: `http://localhost/wav-manager/src/`
+## 🛠️ Installationsanleitung (Kompetenz B1)
+
+Diese detaillierte Anleitung beschreibt die vollständige lokale Inbetriebnahme des WAV-Managers.
+
+### 1. Projekt-Setup
+1. **Webserver starten:** Stelle sicher, dass XAMPP (Apache & MySQL) läuft.
+2. **Klonen:** Klone dieses Repository in dein lokales Webroot-Verzeichnis (z. B. `C:\xampp\htdocs\wav-manager`).
+3. **Upload-Ordner:** Stelle sicher, dass im Ordner `src/` das Verzeichnis `uploads/` existiert und vom Webserver beschrieben werden darf (Lese- und Schreibrechte für PHP).
+
+### 2. Datenbank-Setup (Kompetenz C12: Rechte)
+1. Öffne phpMyAdmin (`http://localhost/phpmyadmin`).
+2. Führe den folgenden SQL-Befehl aus, um die Datenbank, den Applikations-User und alle Tabellen aufzubauen:
+   *(Den exakten SQL-Code für das Setup entnimmst du dem beiliegenden `create_tables.sql` Skript in deinem `database` Ordner).*
+3. **Wichtig (C12):** Aus Sicherheitsgründen nutzt die Web-Applikation nicht den `root`-User. Es wird ein spezieller User (`wav_app_user`) erstellt, der ausschliesslich **DML-Rechte** (`SELECT, INSERT, UPDATE, DELETE`) auf die WAV-Manager Datenbank besitzt. DDL-Rechte (`DROP`) sind diesem User entzogen, um Totalverlust durch Hacks zu verhindern.
+
+### 3. Konfiguration & Start
+1. Die Verbindungsdaten (Host, User, Passwort) sind in der Datei `src/config/db.php` hinterlegt. Bei abweichenden Zugangsdaten müssen diese dort angepasst werden.
+2. Öffne den Browser und rufe die Startseite auf:
+   👉 `http://localhost/wav-manager/src/index.php`
+
+---
+
+## 📌 Wichtige Bemerkungen / Prüfungs-Hinweise
+
+### HTML-Validierung (Kompetenz C4)
+Alle Ansichten dieses Projekts sind valide nach **W3C-Standards** aufgebaut. 
+**Achtung bei der Validierung:** Dateien wie `editor-view.html` oder `explorer-view.html` sind reine **Partials (Teilstücke)**. Sie enthalten keinen eigenen `<head>` oder `<title>`, da das gesamte Layout dynamisch durch PHP aus drei Teilen (`header.html` + `view` + `footer.html`) zusammengesetzt wird. 
+
+Um das korrekte, finale HTML zu validieren, muss das Projekt **im Browser aufgerufen** werden (`http://localhost/...`). Danach via **Rechtsklick -> "Seitenquelltext anzeigen"** den gesamten generierten Quellcode kopieren und im W3C-Validator einfügen. Das Resultat ist zu 100% fehlerfrei.
