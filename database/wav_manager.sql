@@ -97,7 +97,7 @@ CREATE TABLE `one_shots` (
 -- Daten für Tabelle `users`
 --
 INSERT INTO `users` (`id`, `username`, `password_hash`, `created_at`) VALUES
-(3, 'producer1', '$2y$10$mC7YgJb6GzXb7YVp9Z8eUeWvLgZ2zXh8YxK9wQ3r8vO2u1iBc6SFe', '2026-06-11 13:47:03');
+(3, 'producer1', '$2y$10$gdscqoXyMHnOjSVvKKv5I.dF7/dfBKNWYkRkhSpclnlOPny3le6CO', '2026-06-11 13:47:03');
 
 --
 -- Daten für Tabelle `songs`
