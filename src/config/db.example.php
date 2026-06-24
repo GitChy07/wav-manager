@@ -9,8 +9,8 @@
 // Kompromittierung den Schaden zu begrenzen (Prinzip des minimalen Privilegs).
 $host = 'localhost'; 
 $dbname = 'wav_manager';
-$username = 'wav_app_user'; 
-$password = 'wav_secure_pass'; 
+$username = 'wav_app_user'; // LIVE: Eigener App-User eintragen
+$password = 'DEIN_SICHERES_PASSWORT_HIER'; // LIVE: Neues, sicheres Passwort eintragen
 
 try {
     $dsn = "mysql:host=$host;dbname=$dbname;charset=utf8mb4";
