@@ -120,20 +120,20 @@ INSERT INTO `users` (`id`, `username`, `password_hash`, `created_at`) VALUES
 -- Daten für Tabelle `songs`
 --
 INSERT INTO `songs` (`id`, `user_id`, `title`, `description`, `bpm`, `music_key`, `tags`, `file_path`) VALUES
-(1, 3, 'Demo Song - Summer Vibes', NULL, 120, 'Am', '#summer #house', 'demo_loop.wav');
+(1, 3, 'Demo Song - Summer Vibes', NULL, 120, 'Am', '#summer #house', 'uploads/demo_loop.wav');
 
 --
 -- Daten für Tabelle `samples`
 --
 INSERT INTO `samples` (`id`, `user_id`, `song_id`, `title`, `description`, `bpm`, `music_key`, `source_description`, `file_path`) VALUES
-(1, 3, 1, 'Demo Loop - Synth Chords', NULL, 120, 'Am', 'Recorded with Prophet 08', 'demo_loop.wav');
+(1, 3, 1, 'Demo Loop - Synth Chords', NULL, 120, 'Am', 'Recorded with Prophet 08', 'uploads/demo_loop.wav');
 
 --
 -- Daten für Tabelle `one_shots`
 --
 INSERT INTO `one_shots` (`id`, `user_id`, `song_id`, `title`, `description`, `file_path`) VALUES
-(1, 3, 1, 'Demo Kick Drum', NULL, 'demo_kick.wav'),
-(2, 3, 1, 'Demo Snare Drum', NULL, 'demo_snare.wav');
+(1, 3, 1, 'Demo Kick Drum', NULL, 'uploads/demo_kick.wav'),
+(2, 3, 1, 'Demo Snare Drum', NULL, 'uploads/demo_snare.wav');
 
 COMMIT;
 
