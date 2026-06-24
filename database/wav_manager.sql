@@ -21,6 +21,7 @@ USE `wav_manager`;
 -- Datenbank-Benutzer erstellen (Least Privilege Prinzip)
 --
 CREATE USER IF NOT EXISTS 'wav_app_user'@'localhost' IDENTIFIED BY 'SuperSecret123!';
+ALTER USER 'wav_app_user'@'localhost' IDENTIFIED BY 'SuperSecret123!';
 GRANT SELECT, INSERT, UPDATE, DELETE ON `wav_manager`.* TO 'wav_app_user'@'localhost';
 FLUSH PRIVILEGES;
 
