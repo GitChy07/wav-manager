@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         ghost.addEventListener('mouseenter', () => {
             const player = document.getElementById('info-player');
             if (player) {
-                player.src = 'uploads/' + sound.file_path;
+                player.src = '../' + sound.file_path;
                 player.load();
                 if (typeof initVisualizer === 'function') {
                     initVisualizer();
