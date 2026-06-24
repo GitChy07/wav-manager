@@ -46,7 +46,7 @@ In der Entwicklungs-Datenbank existieren vorgefertigte Test-Benutzer, um die Fun
 
 ## 3. Entfernung von Test-Daten (Cleanup)
 
-Das Projekt enthält im Ordner `src/uploads/` möglicherweise noch Test-Audiodateien (`.wav`), die von den Test-Usern hochgeladen wurden.
+Das Projekt enthält im Ordner `uploads/` möglicherweise noch Test-Audiodateien (`.wav`), die von den Test-Usern hochgeladen wurden.
 
 > [!TIP]
-> **Bereinigung:** Leere den Ordner `src/uploads/` (bis auf eventuelle Platzhalter/Gitkeep-Dateien) vollständig, bevor du das Projekt produktiv schaltest. So stellst du sicher, dass keine urheberrechtlich geschützten oder unnötigen Dummy-Dateien mit dem Code ausgeliefert werden.
+> **Bereinigung:** Leere den Ordner `uploads/` (bis auf eventuelle Platzhalter/Gitkeep-Dateien) vollständig, bevor du das Projekt produktiv schaltest. So stellst du sicher, dass keine urheberrechtlich geschützten oder unnötigen Dummy-Dateien mit dem Code ausgeliefert werden.

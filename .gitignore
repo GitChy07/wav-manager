@@ -9,3 +9,6 @@ Thumbs.db
 # Ignoriere hochgeladene Audiodateien (damit das Repo klein bleibt)
 src/uploads/
 src/config/db.php
+
+uploads/*
+!uploads/.gitkeep

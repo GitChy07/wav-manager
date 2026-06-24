@@ -20,7 +20,7 @@ Diese detaillierte Anleitung beschreibt die vollständige lokale Inbetriebnahme 
 ### 1. Projekt-Setup
 1. **Webserver starten:** Stelle sicher, dass XAMPP (Apache & MySQL) läuft.
 2. **Klonen:** Klone dieses Repository in dein lokales Webroot-Verzeichnis (z. B. `C:\xampp\htdocs\wav-manager`).
-3. **Upload-Ordner:** Stelle sicher, dass im Ordner `src/` das Verzeichnis `uploads/` existiert und vom Webserver beschrieben werden darf (Lese- und Schreibrechte für PHP).
+3. **Upload-Ordner:** Stelle sicher, dass im Projekt-Root das Verzeichnis `uploads/` existiert und vom Webserver beschrieben werden darf (Lese- und Schreibrechte für PHP).
 
 ### 2. Datenbank-Setup (Kompetenz C12: Rechte)
 1. Öffne phpMyAdmin (`http://localhost/phpmyadmin`).
