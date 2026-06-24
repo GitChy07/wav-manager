@@ -17,6 +17,13 @@ DROP DATABASE IF EXISTS `wav_manager`;
 CREATE DATABASE `wav_manager` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE `wav_manager`;
 
+--
+-- Datenbank-Benutzer erstellen (Least Privilege Prinzip)
+--
+CREATE USER IF NOT EXISTS 'wav_app_user'@'localhost' IDENTIFIED BY 'SuperSecret123!';
+GRANT SELECT, INSERT, UPDATE, DELETE ON `wav_manager`.* TO 'wav_app_user'@'localhost';
+FLUSH PRIVILEGES;
+
 -- --------------------------------------------------------
 
 --

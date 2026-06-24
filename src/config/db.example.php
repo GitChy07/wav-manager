@@ -1,27 +1,17 @@
 <?php
 // src/config/db.php
 
-// ==============================================================================
-// BEWERTUNGSRELEVANT: KOMPETENZ C12 (Eingeschränkte DB-Rechte)
-// ==============================================================================
-// Hier wird explizit ein Datenbank-User (wav_app_user) mit eingeschränkten Rechten
-// verwendet, anstelle des 'root' Benutzers, um bei einer potenziellen 
-// Kompromittierung den Schaden zu begrenzen (Prinzip des minimalen Privilegs).
+// Datenbank-Konfiguration
+// Aus Sicherheitsgründen wird ein dedizierter App-User mit eingeschränkten Rechten (DML only) verwendet.
 $host = 'localhost'; 
 $dbname = 'wav_manager';
-$username = 'wav_app_user'; // LIVE: Eigener App-User eintragen
-$password = 'DEIN_SICHERES_PASSWORT_HIER'; // LIVE: Neues, sicheres Passwort eintragen
+$username = 'wav_app_user';
+$password = 'SuperSecret123!';
 
 try {
     $dsn = "mysql:host=$host;dbname=$dbname;charset=utf8mb4";
     
-    // ==============================================================================
-    // BEWERTUNGSRELEVANT: KOMPETENZ C19 (SQL-Injection verhindern)
-    // ==============================================================================
-    // PDO wird konfiguriert, um Exceptions zu werfen und Prepared Statements zu 
-    // unterstützen. Im gesamten Projekt werden Variablen ausschließlich über 
-    // Prepared Statements an SQL-Queries übergeben, wodurch SQL-Injections
-    // effektiv verhindert werden.
+    // PDO Konfiguration für Prepared Statements und sicheres Error Handling
     $options = [
         PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,

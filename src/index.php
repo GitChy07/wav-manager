@@ -23,12 +23,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action_login'])) {
     }
 }
 
-// ==============================================================================
-// BEWERTUNGSRELEVANT: KOMPETENZ C8 (Session-Handling)
-// ==============================================================================
-// Hier wird die Zugriffskontrolle (Routing) umgesetzt. 
-// Unangemeldete User werden auf die Login-Seite umgeleitet, 
-// während angemeldete User das Studio-Interface (Explorer View) sehen.
 if (isLoggedIn()) {
     
     // ----------------------------------------------------

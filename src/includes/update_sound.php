@@ -14,11 +14,6 @@ $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
 $type = isset($_POST['type']) ? $_POST['type'] : '';
 $title = isset($_POST['title']) ? trim($_POST['title']) : '';
 
-// ==============================================================================
-// BEWERTUNGSRELEVANT: KOMPETENZ C6 (Serverseitige Validierung)
-// ==============================================================================
-// Bevor wir die Datenbank anfragen, wird serverseitig zwingend geprüft, 
-// ob alle notwendigen Pflichtfelder für ein Update vorhanden sind.
 if ($id === 0 || empty($type) || empty($title)) {
     echo json_encode(['success' => false, 'error' => 'Fehlende Basisdaten (ID, Typ oder Titel)']);
     exit;

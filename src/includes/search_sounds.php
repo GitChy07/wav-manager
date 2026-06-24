@@ -38,12 +38,6 @@ $queries = [];
 $params = [];
 
 // Hashtags und Freitext extrahieren
-// ==============================================================================
-// BEWERTUNGSRELEVANT: KOMPETENZ C19 (SQL-Injection verhindern)
-// ==============================================================================
-// Alle dynamischen Suchparameter (wie $pureText oder $tags) werden NIEMALS
-// direkt in den SQL-String geschrieben (Concatenation). Sie werden stattdessen
-// als Parameter in das $params Array gepackt und per Prepared Statement übergeben.
 $pureText = $searchRaw;
 $tags = [];
 if (!empty($searchRaw)) {

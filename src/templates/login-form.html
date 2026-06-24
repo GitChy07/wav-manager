@@ -8,7 +8,6 @@
         <div class="fl-window-body">
             <form action="index.php" method="POST">
                 <!-- ============================================================================== -->
-                <!-- BEWERTUNGSRELEVANT: KOMPETENZ C5 (Clientseitige Validierung)                   -->
                 <!-- ============================================================================== -->
                 <!-- HTML5 'required' Attribute stellen sicher, dass das Formular nur               -->
                 <!-- abgesendet werden kann, wenn die Felder ausgefüllt sind.                       -->
@@ -32,11 +31,6 @@
 <audio id="info-player" crossorigin="anonymous" style="display:none;"></audio>
 
 <script>
-// ==============================================================================
-// NICHT BEWERTUNGSRELEVANT: UX/UI Kür (Ghost Sounds Animation auf Login Page)
-// ==============================================================================
-// Dieses Skript ist rein visuell und akustisch für das "FL Studio Feeling" gedacht
-// und hat keine Relevanz für die eigentlichen Kern-Kompetenzen.
 document.addEventListener("DOMContentLoaded", async () => {
     try {
         const res = await fetch('includes/ghost_sounds.php');

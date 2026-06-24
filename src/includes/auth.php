@@ -1,12 +1,19 @@
 <?php
 // src/includes/auth.php
-require_once __DIR__ . '/../config/db.php';
+$db_config_file = __DIR__ . '/../config/db.php';
+if (!file_exists($db_config_file)) {
+    die("<div style='font-family:sans-serif; padding:50px; text-align:center; background:#111; color:#fff; height:100vh;'>
+        <h1 style='color:#ff4757;'>⚙️ Setup erforderlich</h1>
+        <p style='color:#a4b0be; font-size:18px;'>Die Datenbank-Konfiguration wurde nicht gefunden.</p>
+        <div style='background:#2f3542; padding:20px; border-radius:8px; display:inline-block; margin-top:20px; text-align:left;'>
+            <p style='margin:0 0 10px 0;'><b>1.</b> Kopiere die Datei <code>src/config/db.example.php</code></p>
+            <p style='margin:0 0 10px 0;'><b>2.</b> Benenne die Kopie um in <code>db.php</code></p>
+            <p style='margin:0;'><b>3.</b> Lade diese Seite neu.</p>
+        </div>
+        </div>");
+}
+require_once $db_config_file;
 
-// ==============================================================================
-// BEWERTUNGSRELEVANT: KOMPETENZ C8 (Session-Handling)
-// ==============================================================================
-// Die Session wird gestartet, falls noch keine aktiv ist. Dies ist zwingend 
-// erforderlich, um Benutzer über mehrere Seitenaufrufe hinweg wiederzuerkennen.
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
