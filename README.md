@@ -24,13 +24,14 @@ Diese detaillierte Anleitung beschreibt die vollständige lokale Inbetriebnahme 
 
 ### 2. Datenbank-Setup
 1. Öffne phpMyAdmin (`http://localhost/phpmyadmin`).
-2. Führe den folgenden SQL-Befehl aus, um die Datenbank, den Applikations-User und alle Tabellen aufzubauen:
-   *(Den exakten SQL-Code für das Setup entnimmst du dem beiliegenden `wav_manager.sql` Skript in deinem `database` Ordner).*
-3. **Wichtig:** Aus Sicherheitsgründen nutzt die Web-Applikation nicht den `root`-User. Es wird ein spezieller User (`wav_app_user`) erstellt, der ausschliesslich **DML-Rechte** (`SELECT, INSERT, UPDATE, DELETE`) auf die WAV-Manager Datenbank besitzt. DDL-Rechte (`DROP`) sind diesem User entzogen, um Totalverlust durch Hacks zu verhindern.
+2. Importiere das beiliegende SQL-Skript `database/wav_manager.sql`. 
+   *(Dieses Skript erstellt automatisch die Datenbank `wav_manager`, alle benötigten Tabellen (inkl. `sound_relations`) sowie Demo-Daten und einen Test-User).*
+3. **Sicherheitshinweis:** Für den Produktivbetrieb solltest du in MySQL einen dedizierten Applikations-User anlegen (z.B. `wav_app_user`), der ausschliesslich **DML-Rechte** (`SELECT, INSERT, UPDATE, DELETE`) auf diese Datenbank besitzt.
 
 ### 3. Konfiguration & Start
-1. Die Verbindungsdaten (Host, User, Passwort) sind in der Datei `src/config/db.php` hinterlegt. Bei abweichenden Zugangsdaten müssen diese dort angepasst werden (siehe `db.example.php`).
-2. Öffne den Browser und rufe die Startseite auf:
+1. Kopiere die Datei `src/config/db.example.php` und benenne sie um in `src/config/db.php`.
+2. Trage in der `src/config/db.php` deine lokalen MySQL-Verbindungsdaten (Host, User, Passwort) ein.
+3. Öffne den Browser und rufe die Startseite auf:
    👉 `http://localhost/wav-manager/src/index.php`
 
 ---
