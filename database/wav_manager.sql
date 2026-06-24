@@ -99,6 +99,25 @@ CREATE TABLE `one_shots` (
 INSERT INTO `users` (`id`, `username`, `password_hash`, `created_at`) VALUES
 (3, 'producer1', '$2y$10$mC7YgJb6GzXb7YVp9Z8eUeWvLgZ2zXh8YxK9wQ3r8vO2u1iBc6SFe', '2026-06-11 13:47:03');
 
+--
+-- Daten für Tabelle `songs`
+--
+INSERT INTO `songs` (`id`, `user_id`, `title`, `bpm`, `music_key`, `tags`, `file_path`) VALUES
+(1, 3, 'Demo Song - Summer Vibes', 120, 'Am', '#summer #house', 'demo_loop.wav');
+
+--
+-- Daten für Tabelle `samples`
+--
+INSERT INTO `samples` (`id`, `user_id`, `song_id`, `title`, `bpm`, `music_key`, `source_description`, `file_path`) VALUES
+(1, 3, 1, 'Demo Loop - Synth Chords', 120, 'Am', 'Recorded with Prophet 08', 'demo_loop.wav');
+
+--
+-- Daten für Tabelle `one_shots`
+--
+INSERT INTO `one_shots` (`id`, `user_id`, `song_id`, `title`, `file_path`) VALUES
+(1, 3, 1, 'Demo Kick Drum', 'demo_kick.wav'),
+(2, 3, 1, 'Demo Snare Drum', 'demo_snare.wav');
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

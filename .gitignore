@@ -12,3 +12,5 @@ src/config/db.php
 
 uploads/*
 !uploads/.gitkeep
+
+!uploads/demo_*.wav
